@@ -10,18 +10,21 @@ import pygame, sys
 
 # Constants 
 SCREENSIZE = WIDTH, HEIGHT = 600, 400
-BLACK = (0, 0, 0)
-GREY = (160, 160, 160)
-
+SCREEN = pygame.display.set_mode(SCREENSIZE)
  
+
 def main():
-    pygame.init()
-    # draw the grid 
     
-    # While loop 
-        # Refresh every time with function "generation" 
+    pygame.init()
+    
+    run = True 
+    while run:
         
-    return 4
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False 
+                
+        pygame.quit()
 
 
 if __name__ == '__main__':
