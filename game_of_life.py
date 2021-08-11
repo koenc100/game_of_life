@@ -9,13 +9,13 @@ Created on Mon Aug  9 21:50:44 2021
 import pygame, sys
 
 # Constants 
-SCREENSIZE = WIDTH, HEIGHT = 800, 600
+SCREENSIZE = WIDTH, HEIGHT = 1300, 700
 SCREEN = pygame.display.set_mode(SCREENSIZE)
 
 WHITE = (255, 255, 255)
 GREY = (100, 100, 100)
 
-FPS = 2
+FPS = 60
 
 
 pygame.display.set_caption("The Game of Life")
@@ -25,7 +25,7 @@ def color_screen():
     pygame.display.update()
     
 def draw_grid():
-    pygame.draw.line(SCREEN, (1, 1, 1), 10, 10)
+    pygame.draw.line(SCREEN, (1, 1, 1), (10, 10), (10, 590))
     pygame.display.update()
     
 def main():
@@ -47,6 +47,7 @@ def main():
                 run = False 
             
             color_screen()
+            draw_grid()
                 
             
                 
