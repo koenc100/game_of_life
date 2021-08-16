@@ -19,6 +19,7 @@ SCREEN = pygame.display.set_mode(SCREENSIZE)
 WHITE = (255, 255, 255)
 GREY = (200, 200, 200)
 BLACK = (0, 0, 0)
+#GREEN = (...)
 FPS = 60
 FPS_GOL = 10
 
@@ -79,6 +80,12 @@ def draw_grid(divisions):
         
     return cellSize, MAP
    
+def draw_startbutton():
+    
+    # Draw rectangle on screen
+    pygame.draw.rect(SCREEN, BLACK, (x_coor, y_coor, cellSize, cellSize))
+    
+    return 4
     
 def fill_square(mx, my, cellSize, MAP):
     
@@ -103,10 +110,7 @@ def fill_square(mx, my, cellSize, MAP):
     print(MAP)
     print(MAP.shape)
     
-def button():
-    return 4
-
-
+    
 def next_generation():
     return 4
 
@@ -124,8 +128,6 @@ def pre_game():
     
     run = True
     
-    clicking = False
-
     # While loop for selecting rectangles
     while run:
         
@@ -139,10 +141,13 @@ def pre_game():
             if event.type == pygame.QUIT:
                 run = False
             
+            # if left mouse button is pressed and within grid, run fill_square
             if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    clicking = True
+                if event.button == 1 and 710 > mx > 10 and 710 > my > 10:
                     fill_square(mx, my, cellSize, MAP)
+                    
+                    #if on button
+                    # start protocol 
                     
                     
                 
