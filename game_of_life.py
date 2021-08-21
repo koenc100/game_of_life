@@ -244,7 +244,8 @@ def main():
                 
                 # Startbutton pressed 
                 if event.button == 1 and 810 > mx > 720 and 300 > my > 200:
-                    start = True
+                    start = False
+                    MAP = next_generation(MAP, cellSize)
                         
                 # Resetbutton pressed
                 if event.button == 1 and 810 > mx > 720 and 500 > my > 400:
