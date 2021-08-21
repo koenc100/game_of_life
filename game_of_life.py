@@ -6,41 +6,36 @@ Created on Mon Aug  9 21:50:44 2021
 """
 
 # Imports of libraries
-import pygame, sys
+import pygame
 from pygame.locals import *
 import numpy as np
-import time 
-from scipy.ndimage import convolve
 import scipy
 
-# Constants 
-SCREENSIZE = WIDTH, HEIGHT = 820, 720
+# Title
+pygame.display.set_caption("The Game of Life")
 
 # The main surface to draw on
 SCREEN = pygame.display.set_mode(SCREENSIZE)
 
-WHITE = (255, 255, 255)
+
+# Constants 
+SCREENSIZE = WIDTH, HEIGHT = 820, 720
 GREY = (200, 200, 200)
 BLACK = (0, 0, 0)
-RED = (200, 0, 0)
-GREEN = (0, 128, 0)
+
 FPS = 60
-FPS_GOL = 2
-
-pygame.display.set_caption("The Game of Life")
-
-def color_screen():
-    SCREEN.fill(GREY)
+divisions = 50
+rebirth_rate = 100
     
 def draw_grid(divisions):
     
     """
-    function creates and draws (divisions x divisions) grid 
-    returns cellSize in pixels and a numpy zero matrix with the same dimentions
+    Function creates and draws (divisions x divisions) grid.
+    Returns cellSize in pixels and a numpy zero matrix with the same dimentions
     """
 
-    CONTAINER_WIDTH_HEIGHT = 700  # Not to be confused with SCREENSIZE
-    cont_x, cont_y = 10, 10  # TOP LEFT OF CONTAINER
+    CONTAINER_WIDTH_HEIGHT = 700  
+    cont_x, cont_y = 10, 10  # Top left
 
     # DRAW Grid Border:
     # TOP lEFT TO RIGHT
@@ -87,7 +82,7 @@ def draw_grid(divisions):
 def draw_startbutton():
     
     """
-    function draws startbutton
+    Function draws startbutton
     """
     
     # Draw rectangle on screen
@@ -101,7 +96,7 @@ def draw_startbutton():
 def draw_resetbutton():
     
     """
-    function draws resetbutton
+    Function draws resetbutton
     """
     
     # Draw rectangle on screen
@@ -110,8 +105,7 @@ def draw_resetbutton():
     # Make text
     font = pygame.font.SysFont(None, 40)
     text = font.render('Reset', True, BLACK)
-    SCREEN.blit(text, (730, 435))
-    
+    SCREEN.blit(text, (730, 435))  
     
 def fill_square_click(mx, my, cellSize, MAP):
     
@@ -119,18 +113,18 @@ def fill_square_click(mx, my, cellSize, MAP):
     Function fills squares in grid and updates starting matrix
     """
     
-    # get [x, y] location of clicked cell
+    # Get [x, y] location of clicked cell
     x_loc = int((mx - 10)  // cellSize)
     y_loc = int((my - 10)  // cellSize)
     
-    # define corner locations of square to be filled (+10 for padding, +1 for frid)
+    # Define corner locations of square to be filled (+10 for padding, +1 for frid)
     x_coor = x_loc * cellSize + 11
     y_coor = y_loc * cellSize + 11
     
     # If not filled
     if  MAP[y_loc, x_loc] == 0:
         
-        # change selected square from 0 to 1. (columns x rows)
+        # Change selected square from 0 to 1. (columns x rows)
         MAP[y_loc, x_loc] = 1
     
         # Draw rectangle on screen (-1 for grid)
@@ -143,23 +137,17 @@ def fill_square_click(mx, my, cellSize, MAP):
         # Draw rectangle on screen
         pygame.draw.rect(SCREEN, GREY, (x_coor, y_coor, cellSize-1, cellSize-1))
         
-def fill_grid(x, y, cellSize):
+def fill_grid(x, y, cellSize, color):
+    
+    """
+    Fills cell on x, y coordinate
+    """
     
     x_coor = (x * cellSize) + 11
     y_coor = (y * cellSize) + 11
     
     # Draw rectangle on screen
-    pygame.draw.rect(SCREEN, BLACK, (x_coor, y_coor, cellSize-1, cellSize-1))
-    
-
-def empty_grid(x, y, cellSize):
-    
-    x_coor = (x * cellSize) + 11
-    y_coor = (y * cellSize) + 11
-    
-    # Draw rectangle on screen
-    pygame.draw.rect(SCREEN, GREY, (x_coor, y_coor, cellSize-1, cellSize-1))
-    
+    pygame.draw.rect(SCREEN, color, (x_coor, y_coor, cellSize-1, cellSize-1))
     
 def next_generation(MAP, cellSize):
     
@@ -168,7 +156,7 @@ def next_generation(MAP, cellSize):
     Returns the new state of the grid after 1 generation
     """
      
-    # kernel used for convolution
+    # Kernel used for convolution
     kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
     
     # Matrix with sum of neighbors as entities 
@@ -177,7 +165,7 @@ def next_generation(MAP, cellSize):
     # Empty matrix used to fill
     MAP_next = np.zeros((MAP.shape[0], MAP.shape[1]))
     
-    # itterate over every item in the MAP, possible faster way: Fancy indexing
+    # Itterate over every item in the MAP, possible faster way: Fancy indexing
     for x in range(MAP.shape[1]):
         for y in range(MAP.shape[0]):
             old_cell = MAP[y, x]
@@ -186,45 +174,49 @@ def next_generation(MAP, cellSize):
             # Cell lives on 
             if 3 >= neighbors_cell >= 2 and old_cell == 1:
                 MAP_next[y, x] = 1
-                fill_grid(x, y, cellSize)
+                fill_grid(x, y, cellSize, BLACK)
                 
             # Cell rebirth
             elif neighbors_cell == 3 and old_cell == 0:
                 MAP_next[y, x] = 1
-                fill_grid(x, y, cellSize)
+                fill_grid(x, y, cellSize, BLACK)
                 
             # All else dies
             else:
                 MAP_next[y, x] = 0 
-                empty_grid(x, y, cellSize)
+                fill_grid(x, y, cellSize, GREY)
                 
     return MAP_next
                              
+def reset_game(divisions):
+    
+    """
+    Function resets game
 
-# The pre function of the game is handled.
+    """
+    # Draw statics 
+    SCREEN.fill(GREY)
+    cellSize, MAP = draw_grid(divisions)
+    draw_startbutton()
+    draw_resetbutton()
+    
+    return cellSize, MAP
+    
 def main():
     
     # Initialize the module
     pygame.init()
     clock = pygame.time.Clock() 
     
-    divisions = 30
-    
-    # Static part 
-    color_screen()
-    cellSize, MAP = draw_grid(divisions)
-    
-    # Draw buttons
-    draw_startbutton()
-    draw_resetbutton()
+    # Draw clean game
+    cellSize, MAP = reset_game(divisions)
     
     # Make timer
-    pygame.time.set_timer(pygame.USEREVENT, 200)
+    pygame.time.set_timer(pygame.USEREVENT, rebirth_rate)
     
     run = True
     start = False
     
-    # While loop for selecting rectangles
     while run:
         
         clock.tick(FPS)
@@ -241,24 +233,19 @@ def main():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1 and 710 > mx > 10 and 710 > my > 10:
                     fill_square_click(mx, my, cellSize, MAP)
-                
+                    
                 # Startbutton pressed 
                 if event.button == 1 and 810 > mx > 720 and 300 > my > 200:
-                    start = False
-                    MAP = next_generation(MAP, cellSize)
-                        
+                    start = True
+                    
                 # Resetbutton pressed
                 if event.button == 1 and 810 > mx > 720 and 500 > my > 400:
-                    color_screen()
-                    cellSize, MAP = draw_grid(divisions)
-                    draw_startbutton()
-                    draw_resetbutton()
+                    cellSize, MAP = reset_game(divisions)
                     start = False
              
             # If start button is pressed, start a timed event
             if start == True and event.type == pygame.USEREVENT:
                 MAP = next_generation(MAP, cellSize)
-                    
                      
         # Update display
         pygame.display.update()
