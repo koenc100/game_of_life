@@ -17,7 +17,6 @@ pygame.display.set_caption("The Game of Life")
 # The main surface to draw on
 SCREEN = pygame.display.set_mode(SCREENSIZE)
 
-
 # Constants 
 SCREENSIZE = WIDTH, HEIGHT = 820, 720
 GREY = (200, 200, 200)
@@ -81,28 +80,16 @@ def draw_grid(divisions):
    
 def draw_startbutton():
     
-    """
-    Function draws startbutton
-    """
-    
-    # Draw rectangle on screen
+    # Draw rectangle and text on screen
     pygame.draw.rect(SCREEN, GREEN, (720, 200, 90, 100))
-    
-    # Make text
     font = pygame.font.SysFont(None, 40)
     text = font.render('Start', True, BLACK)
     SCREEN.blit(text, (730, 235))
     
 def draw_resetbutton():
     
-    """
-    Function draws resetbutton
-    """
-    
-    # Draw rectangle on screen
+    # Draw rectangle and text on screen
     pygame.draw.rect(SCREEN, RED, (720, 400, 90, 100))
-    
-    # Make text
     font = pygame.font.SysFont(None, 40)
     text = font.render('Reset', True, BLACK)
     SCREEN.blit(text, (730, 435))  
@@ -242,7 +229,7 @@ def main():
                 if event.button == 1 and 810 > mx > 720 and 500 > my > 400:
                     cellSize, MAP = reset_game(divisions)
                     start = False
-             
+            
             # If start button is pressed, start a timed event
             if start == True and event.type == pygame.USEREVENT:
                 MAP = next_generation(MAP, cellSize)
