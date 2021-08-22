@@ -23,7 +23,7 @@ GREY = (200, 200, 200)
 BLACK = (0, 0, 0)
 
 FPS = 60
-divisions = 50
+divisions = 100
 rebirth_rate = 100
     
 def draw_grid(divisions):
