@@ -1,2 +1,4 @@
 # game_of_life
- Simple game of life code
+ First pygame ever. 
+ 
+ Code to play with the Conway's game of life protocol.
