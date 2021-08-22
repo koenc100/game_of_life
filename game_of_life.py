@@ -9,22 +9,24 @@ Created on Mon Aug  9 21:50:44 2021
 import pygame
 from pygame.locals import *
 import numpy as np
-import scipy
+from scipy.ndimage import convolve
 
 # Title
 pygame.display.set_caption("The Game of Life")
-
-# The main surface to draw on
-SCREEN = pygame.display.set_mode(SCREENSIZE)
 
 # Constants 
 SCREENSIZE = WIDTH, HEIGHT = 820, 720
 GREY = (200, 200, 200)
 BLACK = (0, 0, 0)
+GREEN = (0, 150, 10)
+RED = (150, 10, 0)
+
+# The main surface to draw on
+SCREEN = pygame.display.set_mode(SCREENSIZE)
 
 FPS = 60
-divisions = 30
-rebirth_rate = 40
+divisions = 50
+rebirth_rate = 100
     
 def draw_grid(divisions):
     
@@ -104,7 +106,7 @@ def fill_square_click(mx, my, cellSize, MAP):
     x_loc = int((mx - 10)  // cellSize)
     y_loc = int((my - 10)  // cellSize)
     
-    # Define corner locations of square to be filled (+10 for padding, +1 for frid)
+    # Define corner locations of square to be filled (+10 for padding, +1 for grid)
     x_coor = x_loc * cellSize + 11
     y_coor = y_loc * cellSize + 11
     
@@ -147,7 +149,7 @@ def next_generation(MAP, cellSize):
     kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
     
     # Matrix with sum of neighbors as entities 
-    MAP_mask = scipy.ndimage.convolve(MAP, kernel, mode='constant')
+    MAP_neighbors = convolve(MAP, kernel, mode='constant')
     
     # Empty matrix used to fill
     MAP_next = np.zeros((MAP.shape[0], MAP.shape[1]))
@@ -156,7 +158,7 @@ def next_generation(MAP, cellSize):
     for x in range(MAP.shape[1]):
         for y in range(MAP.shape[0]):
             old_cell = MAP[y, x]
-            neighbors_cell = MAP_mask[y, x]
+            neighbors_cell = MAP_neighbors[y, x]
             
             # Cell lives on 
             if 3 >= neighbors_cell >= 2 and old_cell == 1:
