@@ -23,8 +23,8 @@ GREY = (200, 200, 200)
 BLACK = (0, 0, 0)
 
 FPS = 60
-divisions = 100
-rebirth_rate = 100
+divisions = 30
+rebirth_rate = 40
     
 def draw_grid(divisions):
     
@@ -224,15 +224,16 @@ def main():
                 # Startbutton pressed 
                 if event.button == 1 and 810 > mx > 720 and 300 > my > 200:
                     start = True
-                    
+            
                 # Resetbutton pressed
                 if event.button == 1 and 810 > mx > 720 and 500 > my > 400:
                     cellSize, MAP = reset_game(divisions)
                     start = False
-            
+                    
             # If start button is pressed, start a timed event
             if start == True and event.type == pygame.USEREVENT:
                 MAP = next_generation(MAP, cellSize)
+                
                      
         # Update display
         pygame.display.update()
